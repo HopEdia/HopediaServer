@@ -1,0 +1,31 @@
+{
+  "name": "hopedia_api",
+  "version": "0.1.0",
+  "description": "Api server of hopedia",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "connect-mongo": "^1.1.0",
+    "mongo-sanitize": "^1.0.0",
+    "mongodb": "^2.1.14",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koko-ng/HopediaApi.git"
+  },
+  "author": "koko",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/koko-ng/HopediaApi/issues"
+  },
+  "homepage": "https://github.com/koko-ng/HopediaApi#readme"
+}
