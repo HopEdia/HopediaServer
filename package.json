@@ -17,7 +17,7 @@
     "body-parser": "^1.15.0",
     "connect-mongo": "^1.1.0",
     "nodemailer": "^2.3.2",
-    "hopedia_beer_sanitizer": "koko-ng/HopediaSanitizer.git#v0.1.0"
+    "hopedia_beer_sanitizer": "HopEdia/HopediaSanitizer.git#v0.1.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koko-ng/HopediaServer.git"
+    "url": "git+https://github.com/HopEdia/HopediaServer.git"
   },
   "author": "koko-ng",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/koko-ng/HopediaServer/issues"
+    "url": "https://github.com/HopEdia/HopediaServer/issues"
   },
-  "homepage": "https://github.com/koko-ng/HopediaServer#readme"
+  "homepage": "https://github.com/HopEdia/HopediaServer#readme"
 }
