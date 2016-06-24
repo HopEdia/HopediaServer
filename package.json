@@ -13,6 +13,10 @@
     "mongodb": "^2.1.14",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "async": "^2.0.0-rc.3",
+    "body-parser": "^1.15.0",
+    "connect-mongo": "^1.1.0",
+    "nodemailer": "^2.3.2",
     "hopedia_beer_sanitizer": "koko-ng/HopediaSanitizer.git#v0.1.0"
   },
   "devDependencies": {},
