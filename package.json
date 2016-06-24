@@ -12,7 +12,8 @@
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^2.1.14",
     "express": "^4.13.4",
-    "express-session": "^1.13.0"
+    "express-session": "^1.13.0",
+    "hopedia_beer_sanitizer": "koko-ng/HopediaSanitizer.git#v0.1.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -22,7 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/koko-ng/HopediaApi.git"
   },
-  "author": "koko",
+  "author": "koko-ng",
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/koko-ng/HopediaApi/issues"
