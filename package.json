@@ -1,5 +1,5 @@
 {
-  "name": "hopedia_api",
+  "name": "hopedia_server",
   "version": "0.1.0",
   "description": "Api server of hopedia",
   "main": "index.js",
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koko-ng/HopediaApi.git"
+    "url": "git+https://github.com/koko-ng/HopediaServer.git"
   },
   "author": "koko-ng",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/koko-ng/HopediaApi/issues"
+    "url": "https://github.com/koko-ng/HopediaServer/issues"
   },
-  "homepage": "https://github.com/koko-ng/HopediaApi#readme"
+  "homepage": "https://github.com/koko-ng/HopediaServer#readme"
 }
