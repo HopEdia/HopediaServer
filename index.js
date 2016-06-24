@@ -21,10 +21,15 @@ var util=require('util')
 
 exports = module.exports = main;
 
+const tokenRandBytes = 32;
+
+const regEmail = /\S+@\S+\.\S+/;
+
 var db;
 var beers,
     users,
-    secret;
+    secret,
+    mailer;
 
 const acceptGetProp = ['id', 'name', 'brewery_id', 'abv', 'cat_id', 'ingredients', 'name_completion', 'barcode', 'barcode_format'];
 const type = ['bottle', 'can', 'draft'];
