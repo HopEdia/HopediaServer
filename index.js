@@ -53,8 +53,22 @@ function main(options) {
 	options.hostname = options.hostname || 'localhost'
 	mailer = nodemailer.createTransport(options.mailURI); //TODO
 
-beers = db.collection('beers');
-users = db.collection('users');
+	beers = db.collection('beers');
+	users = db.collection('users');
+
+	users.createIndex( { "email": 1 }, { unique: true } )
+	users.createIndex( { "username": 1 }, { unique: true } )
+
+	//search, if reviews exist modify
+	users.createIndex( { "reviews.user": 1 } )
+
+	beers.createIndex({"name._value": "text"})
+	//for regex use
+	beers.createIndex({"name._value": 1}, { unique: true })
+
+	beers.createIndex({"brewery_id._value": 1})
+	beers.createIndex({"abv._value": 1})
+	beers.createIndex({"cat_id._value": 1})
 
 if('development' == app.get('env')) {
 	app.use(function(req, res, next) {
