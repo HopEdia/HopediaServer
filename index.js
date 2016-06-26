@@ -255,17 +255,17 @@ app.get('/', function (req, res) {
 .post('/getToken', bodyParser.json(), function (req, res) {
 	if(req.body.password) {
 		req.body.password = mongo_sanitize(req.body.password);
-		pass=true;
+		var pass=true;
 		delete req.body.newPassword;
 	}
 	else if(req.body.newPassword) {
 		req.body.newPassword = mongo_sanitize(req.body.newPassword);
-		pass=true;
+		var pass=true;
 		delete req.body.password;
 	}
 	else {
 		res.sendStatus(401);
-		pass=false;
+		var pass=false;
 	}
 	if(req.body.username && pass){
 		//everything ok
