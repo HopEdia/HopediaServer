@@ -174,7 +174,7 @@ app.get('/', function (req, res) {
 			//sanitize user input
 			req.body._id = mongo_uuid(req.body._id)
 
-			update = { $push : {} }
+			var update = { $push : {} }
 			for (var key in beer) {
 				// skip loop if the property is from prototype
 				if (!beer.hasOwnProperty(key)) continue;
@@ -294,7 +294,7 @@ app.get('/', function (req, res) {
 				//REGENERATE long time token & delete old one
 				//console.log('Token issued: '+ issue/1000/3600 + ' hour ago.');
 				//require ok, node cache
-				uid = new require('mongodb').ObjectID(token[0])
+				var uid = new require('mongodb').ObjectID(token[0])
 				users.updateOne({'_id': uid}, { $pull: { 'tokens': token[2] } }, { 'multi': true }, function(err, result) {
 					if(result.modifiedCount >= 1) {
 						//new token, insert in db and send it
@@ -403,9 +403,9 @@ app.get('/', function (req, res) {
 	if(req.body.username || req.body.email) {
 		generateToken(crypto.randomBytes(32).toString('hex'), Date.now(), '', function(token) {
 			if(req.body.username)
-				criteria={ 'username' : mongo_sanitize(String(req.body.username)) }
+				var criteria={ 'username' : mongo_sanitize(String(req.body.username)) }
 			else if(req.body.email)
-				criteria={ 'email' : mongo_sanitize(String(req.body.email)) }
+				var criteria={ 'email' : mongo_sanitize(String(req.body.email)) }
 			users.find(criteria).toArray(function(err, docs) {
 				if(docs.length == 1) {
 					if(docs[0].verified !== true) {
@@ -440,7 +440,7 @@ app.get('/', function (req, res) {
 .post('/changePassword', bodyParser.json(), function(req, res) {
 	if(req.body.email) {
 		generateToken(crypto.randomBytes(32).toString('hex'), Date.now(), '', function(token) {
-			criteria={ 'email' : mongo_sanitize(String(req.body.email)) }
+			var criteria={ 'email' : mongo_sanitize(String(req.body.email)) }
 			users.find(criteria).toArray(function(err, docs) {
 				if(docs.length == 1) {
 					if(docs[0].verified == true) {
