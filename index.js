@@ -324,15 +324,22 @@ app.get('/', function (req, res) {
 	}
 })
 .post('/signup', bodyParser.json(), function(req, res) {
-	if(!req.session.uid && req.body.email && req.body.username && req.body.password ) {
+	if(!req.session.uid && req.body.email && req.body.password ) {
 		//not logged in
 		req.body.email = String(req.body.email);
-		req.body.username = String(req.body.username);
 		req.body.password = String(req.body.password);
 
-		if( /\S+@\S+\.\S+/.test(req.body.email) && req.body.username.length > 2 && req.body.username.length <= 25 && req.body.password.length >= 8 && req.body.password.length <= 75 ){
+		if(req.body.username) {
+			if(req.body.username.length > 2 && req.body.username.length <= 25)
+				req.body.username = String(req.body.username);
+			else
+				delete req.body.username;
+		}
+
+		if( /\S+@\S+\.\S+/.test(req.body.email)&& req.body.password.length >= 8 && req.body.password.length <= 75 ){
 			//db.users.createIndex( { 'email': 1 }, { unique: true } )
 			//db.users.createIndex( { 'username': 1 }, { unique: true } )
+
 			async.parallel([
 					function(cb){
 						generateToken(crypto.randomBytes(32).toString('hex'), Date.now(), '', function(token) {
@@ -354,14 +361,17 @@ app.get('/', function (req, res) {
 					}
 					else {
 						//insert before password, need to check if username & mail are unique
-						users.insert({
-							'username': mongo_sanitize(req.body.username),
+						var insert = {
 							'password': false,
 							'email': mongo_sanitize(req.body.email),
 							'verified': results[0],
 							'signupDate': Date.now(),
 							'salt': results[1]
-						}, function(err, resultInsert) {
+						}
+						if(req.body.username)
+							insert.username=mongo_sanitize(req.body.username)
+
+						users.insert(insert, function(err, resultInsert) {
 							if(resultInsert.insertedCount == 1 && err == null) {
 								//successfully inserted, begin hash calculation
 								hashPass(req.body.password, results[1], function(hash) {
