@@ -57,7 +57,7 @@ function main(options) {
 	users = db.collection('users');
 
 	users.createIndex( { "email": 1 }, { unique: true } )
-	users.createIndex( { "username": 1 }, { unique: true } )
+	db.users.createIndex({ username: 1 }, { unique: true, partialFilterExpression: { username: { $exists: true } } } )
 
 	//search, if reviews exist modify
 	users.createIndex( { "reviews.user": 1 } )
