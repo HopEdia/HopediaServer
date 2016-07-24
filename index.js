@@ -15,7 +15,9 @@ const mongo = require('mongodb').MongoClient,
       crypto = require('crypto'),
       nodemailer = require('nodemailer'),
       async = require('async'),
-      path = require('path')
+      path = require('path'),
+      fs = require('fs'),
+      gm = require('gm');
 
 var util=require('util')
 
@@ -29,35 +31,43 @@ var db;
 var beers,
     users,
     secret,
-    mailer;
+    mailer,
+    options;
 
 const acceptGetProp = ['id', 'name', 'brewery_id', 'abv', 'cat_id', 'ingredients', 'name_completion', 'barcode', 'barcode_format'];
 const type = ['bottle', 'can', 'draft'];
 
-function main(options) {
+function main(param) {
 	util.log('starting server...')
 
-	if(options.database)
-		db=options.database;
+	if(param.database)
+		db=param.database;
 	else {
 		console.log("You must provide a mongoDB database object, exiting..."); process.exit(1);
 	}
 
-	if(options.secret)
-		secret=options.secret
+	if(param.secret)
+		secret=param.secret
 	else {
 		secret = 'secret'; console.log("You must provide a secret in production environment");
 	}
 
-	options.port = options.port || 8081
-	options.hostname = options.hostname || 'localhost'
+	param.port = param.port || 8081
+	param.hostname = param.hostname || 'localhost'
+
+	if(!param.url) {
+		param.url=param.hostname+':'+param.port; console.log("WARN: Using hostname+':'port for the url")
+	}
+
+	options=param;
+	param=null;
 	mailer = nodemailer.createTransport(options.mailURI); //TODO
 
 	beers = db.collection('beers');
 	users = db.collection('users');
 
 	users.createIndex( { "email": 1 }, { unique: true } )
-	db.users.createIndex({ username: 1 }, { unique: true, partialFilterExpression: { username: { $exists: true } } } )
+	users.createIndex({ username: 1 }, { unique: true, partialFilterExpression: { username: { $exists: true } } } )
 
 	//search, if reviews exist modify
 	users.createIndex( { "reviews.user": 1 } )
@@ -69,6 +79,13 @@ function main(options) {
 	beers.createIndex({"brewery_id._value": 1})
 	beers.createIndex({"abv._value": 1})
 	beers.createIndex({"cat_id._value": 1})
+
+		checkDirectorySync('uploads');
+		checkDirectorySync('uploads/144');
+		checkDirectorySync('uploads/360');
+		checkDirectorySync('uploads/480');
+		checkDirectorySync('uploads/720');
+		checkDirectorySync('uploads/1080');
 
 if('development' == app.get('env')) {
 	app.use(function(req, res, next) {
@@ -136,7 +153,15 @@ app.get('/', function (req, res) {
 					if(result.matchedCount >= 1) {
 						//beer exists
 						//insert comment
-						beers.updateOne( {'_id': req.body.beerId}, { $push : { 'reviews': review } }, function(err, result) {
+						beers.updateOne(
+							{'_id': req.body.beerId},
+							{
+								$push : { 'reviews': {
+										$each: [ review ],
+										$position: 0
+										}
+									}
+							}, function(err, result) {
 							if(result != null)
 								res.sendStatus(200)
 							else
@@ -157,7 +182,6 @@ app.get('/', function (req, res) {
 .post('/editBeer', bodyParser.json(), function(req, res){
 	if(req.body._id && req.session.uid) {
 		var beer = {}
-		console.log(req.session.uid)
 		beer.name = sanitizer.beer.name(req.body.name, true, req.session.uid)
 		beer.brewery_id = sanitizer.beer.brewery_id(req.body.brewery_id, true, req.session.uid)
 		beer.abv = sanitizer.beer.abv(req.body.abv, true, req.session.uid)
@@ -191,8 +215,9 @@ app.get('/', function (req, res) {
 				function(err, result) {
 					console.log(err)
 					if(err === null) {
+						console.log(result)
 						if(result.matchedCount >= 1)
-							res.sendStatus(200);
+							insertImage(req.body._id, req, res)
 						else
 							res.sendStatus(401)
 					}
@@ -200,6 +225,11 @@ app.get('/', function (req, res) {
 						res.sendStatus(500)
 				}
 			);
+		}
+		else if(req.body.image === true) {
+			console.log(req.body._id)
+			insertImage(req.body._id, req, res)
+
 		}
 		//nothing send (empty req or wrong values, check client side)
 		else
@@ -222,25 +252,21 @@ app.get('/', function (req, res) {
 		beer.category = [ sanitizer.beer.category(req.body.category, true, req.session.uid) ]
 		beer.barcode = [ sanitizer.beer.barcode(req.body.barcode, true, req.session.uid) ]
 		beer.packaging = [ sanitizer.beer.packaging(req.body.packaging, true, req.session.uid) ]
+		beer.images = [ ]
 
 		beer = sanitizer.delete_null_properties(beer, true);
 
-		console.log(beer)
-		//TODO, inserts empty array :(
-		if(beer !== {} && beer.name) {
-			//sanitize user input
-			req.body.beerId = mongo_uuid(req.body.beerId)
+		if(beer !== {} && beer.name && beer.name[0]) {
 
 			beer.type = 'beer';
 			beers.insertOne(beer, function(err, result) {
 					console.log(err)
 					if(err === null) {
-						//beer exists & is modified
-						res.sendStatus(200);
+						insertImage(result.insertedId, req, res)
 					}
-					//TODO if err contain duplicate ?
+					//TODO reinforce regex
 					else
-						res.sendStatus(500)
+						res.status(400).send(/\$(.*)_\d.*/.exec(err.errmsg)[1])
 				}
 			);
 		}
@@ -251,7 +277,83 @@ app.get('/', function (req, res) {
 	else {
 		res.sendStatus(401)
 	}
-}) //web part
+})
+.put('/uploadImage/:objectId', bodyParser.raw({limit: '250kb', type: 'image/jpeg'}), function (req, res) {
+	var beerId = req.params.objectId.slice(0, -8);
+	// If there's an error
+	if(!req.body || !req.session.uid || !req.is('image/jpeg')){
+		res.sendStatus(400)
+	}
+	else {
+		beers.update(
+			{ _id: mongo_uuid(beerId) },
+			{ $pull: { images: { _value: req.params.objectId } } },
+			{ multi: true },
+			function(err, result) {
+				console.log(result.result.nModified)
+				resize(req.body, req.params.objectId, function(err, width) {
+					console.log(err)
+					if (err) res.sendStatus(500);
+					else res.sendStatus(200)
+					pushImage(beerId, req.params.objectId, req.session.uid, null, width)
+			})
+		});
+		/*var cursor = beers.aggregate([
+			{$match : {_id: mongo_uuid(beerId)}},
+			{ $project:
+				{ images:
+					{ $filter: { input: "$images", as: "image",
+						cond: { $eq: [ "$$image._value", req.params.objectId ] }
+						}
+					}
+				}
+			}
+		]);
+		cursor.get(function(err, result) {
+			console.log(result)
+			console.log(err)
+			if(result.length==1 && err === null) {
+				if(result[0].images.length > 0) {
+					if(result[0].images[0].user.toString() === req.session.uid && result[0].images[0]._value===req.params.objectId) {
+						resize(req.body, req.params.objectId, function(err, width) {
+							if (err) res.sendStatus(500);
+							else res.sendStatus(200)
+							console.log(1)
+							cursor.forEach(function (doc) {
+								console.log(doc)
+								/*return {
+									"updateOne": {
+										"filter": { "_id": doc._id } ,
+										"update": { "$set": { "nb_orders_1year": doc.count } }
+									}
+								};/
+							});
+							/*var bulkOps = db.collection('tmp_indicators').find().map(function (doc) {
+								console.log(doc)
+								return {
+									"updateOne": {
+										"filter": { "_id": doc._id } ,
+										"update": { "$set": { "nb_orders_1year": doc.count } }
+									}
+								};
+							});
+							db.clients.bulkWrite(bulkOps, { "ordered": true });/
+						})
+					}
+					else
+						res.sendStatus(401)
+				}
+				else
+					res.sendStatus(500)
+			}
+			else
+				res.sendStatus(500)
+		});*/
+
+	}
+
+})
+ //web part
 .post('/getToken', bodyParser.json(), function (req, res) {
 	if(req.body.password) {
 		req.body.password = mongo_sanitize(req.body.password);
@@ -483,6 +585,7 @@ app.get('/', function (req, res) {
 		res.sendStatus(401);
 	}
 })
+.use('/uploads', require('express').static(__dirname + '/uploads'));
 
 app.listen(options.port, options.hostname)
 util.log('Api server listening on ' + options.hostname + ':' + options.port)
@@ -519,8 +622,28 @@ const findBeer = function(properties, cb) {
 				break;
 		}
 	});
-	console.log(find)
-	var cursor = beers.find(find, {'reviews': {$slice: 10}}).limit(10);
+	var aggregate = [
+		{ $match: find },
+		{ $project : {
+			reviews: { $slice: [ '$reviews', 10 ] } ,
+			name: 1,
+			brewery_id: 1,
+			abv: 1,
+			ibu: 1,
+			categories: 1,
+			wikidata_id: 1,
+			images: {
+				$filter: {
+					input: '$images',
+					as: 'image',
+					cond: {$gt: ['$$image.maxSize', null]}
+				}
+			}
+		}}
+	];
+	console.log(aggregate)
+	var cursor = beers.aggregate(aggregate)
+		//images: { $: { maxSize: { $ne : null } } } } ).limit(10);
 
 	cursor.each(function(err, doc) {
 		assert.equal(err, null);
@@ -599,6 +722,7 @@ const generateTokenAndRand = function(uid, date, cb) {
 	}
 function checkCredidential(criteria, password, validationToken, res, newPassword) {
 	users.find(criteria).toArray(function(err, docs) {
+		console.log(criteria)
 		if(docs[0] && password) {
 			hashPass(password, docs[0].salt.buffer, function(hash) {
 				if(hash === docs[0].password && docs[0].verified == true) {
@@ -671,7 +795,7 @@ function checkCredidential(criteria, password, validationToken, res, newPassword
 		}
 
 		else {
-			res.sendStatus(404)
+			res.sendStatus(401)
 		}
 	});
 }
@@ -692,3 +816,103 @@ function sendValidationToken(token, email, cb) {
 			cb(err, info)
 		});
 }
+function getPutImageUrl(imageId) {
+	return options.url+'/uploadImage/'+imageId;
+}
+function getImageId(objectId, cb) {
+	crypto.randomBytes(4, (err, buf) => {
+		if (err) cb(false);
+		else {
+			cb(objectId+buf.toString('hex'));
+		}
+	});
+}
+function pushImage(beerId, imageId, uid, cb, maxSize) {
+	var obj = sanitizer.insertDateAndUser(imageId, true, uid)
+	if(maxSize)
+		obj.maxSize=maxSize;
+	beers.updateOne(
+		{ _id : mongo_uuid(beerId) },
+		{
+			$push: {
+				"images": {
+					$each: [ obj ],
+					$position: 0
+				}
+			}
+		}, cb);
+}
+function insertImage(beerId, req, res, maxSize) {
+//beer exists & is modified
+	if(req.body.image!==true)
+		res.sendStatus(200);
+	else {
+		getImageId(beerId, (imageId) => {
+			pushImage(beerId, imageId, req.session.uid, function(err, result) {
+				console.log(err)
+				console.log(beerId)
+				console.log(sanitizer.insertDateAndUser(imageId, true, req.session.uid))
+				if(err === null) {
+					if(result.matchedCount >= 1)
+						res.status(200).send(getPutImageUrl(imageId));
+					else
+						res.sendStatus(401)
+				}
+				else
+					res.sendStatus(500)
+			});
+		});
+	}
+}
+function resize(image, objectId, callback) {
+	gm(image).size(function(err, value){
+		var i=true
+		var imageName = objectId + '.jpg';
+		var maxSize;
+		function cb (err) {
+			if(i) {
+				if(err)
+					callback(err, maxSize)
+				else
+					callback(false, maxSize)
+
+				//console.log('Created an image from a Buffer!');
+				i=false;
+			}
+		}
+		function setSize(size) {
+			console.log(size)
+			if(!maxSize)
+				maxSize=size;
+		}
+		if(value.width >= 1080) {
+			setSize(1080)
+			gm(image, imageName).resize(1080).write(__dirname + '/uploads/1080/' + imageName, cb);
+		}
+		if(value.width >= 720) {
+			setSize(720)
+			gm(image, imageName).resize(720).write(__dirname + '/uploads/720/' + imageName, cb)
+		}
+		if(value.width >= 480) {
+			setSize(480)
+			gm(image, imageName).resize(480).write(__dirname + '/uploads/480/' + imageName, cb)
+		}
+		if(value.width >= 360) {
+			setSize(360)
+			gm(image, imageName).resize(360).write(__dirname + '/uploads/360/' + imageName, cb)
+		}
+		setSize(144)
+		gm(image, imageName).resize(144).write(__dirname + '/uploads/144/' + imageName, cb)
+		//TODO
+	})
+
+}
+
+function checkDirectorySync(directory) {
+	try {
+		fs.statSync(directory);
+	} catch(e) {
+		fs.mkdirSync(directory);
+	}
+}
+
