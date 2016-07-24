@@ -59,6 +59,8 @@ function main(param) {
 		param.url=param.hostname+':'+param.port; console.log("WARN: Using hostname+':'port for the url")
 	}
 
+	param.mailValidation = param.mailValidation || sendValidationToken;
+
 	options=param;
 	param=null;
 	mailer = nodemailer.createTransport(options.mailURI); //TODO
@@ -482,7 +484,7 @@ app.get('/', function (req, res) {
 										if(resultPass.modifiedCount == 1) {
 											// send mail with defined transport object
 											//TODO ttl, delete after no answer -> index
-											sendValidationToken(results[0], resultInsert.ops[0].email, function(err, info) {
+											options.mailValidation(results[0], resultInsert.ops[0].email, function(err, info) {
 												if(!err)
 													res.sendStatus(200);
 												else
@@ -524,7 +526,7 @@ app.get('/', function (req, res) {
 						users.updateOne(criteria, { $set: { 'verified' : token } }, function(err, result) {
 							if(result.modifiedCount == 1) {
 								// send mail
-								sendValidationToken(token, docs[0].email, function(err, info) {
+								options.mailValidation(token, docs[0].email, function(err, info) {
 									if(!err)
 										res.sendStatus(200);
 									else
@@ -560,7 +562,7 @@ app.get('/', function (req, res) {
 						users.updateOne(criteria, { $set: { 'changePasswordToken' : token } }, function(err, result) {
 							if(result.modifiedCount == 1) {
 								// send mail //TODO customize mail for pass update
-								sendValidationToken(token, docs[0].email, function(err, info) {
+								options.mailValidation(token, docs[0].email, function(err, info) {
 									if(!err)
 										res.sendStatus(200);
 									else
