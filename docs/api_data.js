@@ -1,0 +1,1055 @@
+define({ "api": [
+  {
+    "group": "Account",
+    "version": "0.1.1",
+    "type": "post",
+    "url": "/changePassword",
+    "title": "Change password",
+    "description": "<p>Change your password, a confirmation link will be sent to your mailbox. Then you can change your password, see <a href=\"#api-Account-PostGettoken\">getToken</a></p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's e-mail</p>"
+          }
+        ]
+      }
+    },
+    "contentType": "application/json",
+    "filename": "lib/account/index.js",
+    "groupTitle": "Account",
+    "name": "PostChangepassword",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//changePassword"
+      }
+    ]
+  },
+  {
+    "group": "Account",
+    "version": "0.1.1",
+    "type": "post",
+    "url": "/getToken",
+    "title": "Get a long-lived token",
+    "description": "<p>Get a token valid for a lunar revolution (27.3 days, 2358720000milliseconds)</p> <p>These tokens are base64-encoded string containing the uid, the date of emission, random bytes. Everything is signed with the server's key.</p>",
+    "parameter": {
+      "fields": {
+        "email login": [
+          {
+            "group": "email login",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's e-mail</p>"
+          },
+          {
+            "group": "email login",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's password</p>"
+          },
+          {
+            "group": "email login",
+            "type": "String",
+            "optional": true,
+            "field": "validationToken",
+            "description": "<p>Token sent by mail if you are activating the account.</p>"
+          }
+        ],
+        "username login": [
+          {
+            "group": "username login",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>User's e-mail</p>"
+          },
+          {
+            "group": "username login",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's password</p>"
+          },
+          {
+            "group": "username login",
+            "type": "String",
+            "optional": true,
+            "field": "validationToken",
+            "description": "<p>Token sent by mail if you are activating the account.</p>"
+          }
+        ],
+        "email password recovery": [
+          {
+            "group": "email password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's e-mail</p>"
+          },
+          {
+            "group": "email password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "newPassword",
+            "description": "<p>User's password to be set.</p>"
+          },
+          {
+            "group": "email password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "validationToken",
+            "description": "<p>Token sent by mail.</p>"
+          }
+        ],
+        "username password recovery": [
+          {
+            "group": "username password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>User's e-mail</p>"
+          },
+          {
+            "group": "username password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "newPassword",
+            "description": "<p>User's password to be set.</p>"
+          },
+          {
+            "group": "username password recovery",
+            "type": "String",
+            "optional": false,
+            "field": "validationToken",
+            "description": "<p>Token sent by mail.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>A long-lived token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\nrfgfzuwsdzfuse",
+          "type": "text"
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "String",
+            "optional": false,
+            "field": "wrong_pass_or_email",
+            "description": "<p>Password or e-mail is wrong</p>"
+          },
+          {
+            "group": "Error 401",
+            "type": "String",
+            "optional": false,
+            "field": "account_not_active",
+            "description": "<p>The accoun't hasn't been activated, maybe you forgot validationToken?</p>"
+          },
+          {
+            "group": "Error 401",
+            "type": "String",
+            "optional": false,
+            "field": "invalid_token",
+            "description": "<p>The validation token is either too old, or doesn't correspond to the account</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/account/index.js",
+    "groupTitle": "Account",
+    "name": "PostGettoken",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//getToken"
+      }
+    ]
+  },
+  {
+    "group": "Account",
+    "version": "0.1.1",
+    "type": "post",
+    "url": "/login",
+    "title": "Login",
+    "description": "<p>Session will be stored in cookies.</p> <p>If the token has been emitted between one day and a lunar revolution (27.3 days), a new long-lived token will be emitted. You have to store the new one and remove the old one.</p>",
+    "parameter": {
+      "fields": {
+        "token": [
+          {
+            "group": "token",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>sent by getToken</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>A long-lived token, if the token has to be regenrated.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Successful-Login:",
+          "content": "HTTP/1.1 200 OK\nrfgfzuwsdzfuse",
+          "type": "text"
+        },
+        {
+          "title": "Successful-Login:",
+          "content": "HTTP/1.1 200 OK",
+          "type": "text"
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "String",
+            "optional": false,
+            "field": "token_expired",
+            "description": "<p>The token is too old, you have to use getToken again.</p>"
+          },
+          {
+            "group": "Error 401",
+            "type": "String",
+            "optional": false,
+            "field": "invalid_token",
+            "description": "<p>The token signature is invalid.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "String",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>The token hasn't been found.</p>"
+          }
+        ],
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "String",
+            "optional": false,
+            "field": "empty_token",
+            "description": "<p>No token provided</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/account/index.js",
+    "groupTitle": "Account",
+    "name": "PostLogin",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//login"
+      }
+    ]
+  },
+  {
+    "group": "Account",
+    "version": "0.1.1",
+    "type": "post",
+    "url": "/resendMailToken",
+    "title": "Send the sign-up validation token one more time.",
+    "parameter": {
+      "fields": {
+        "email recovery": [
+          {
+            "group": "email recovery",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's e-mail</p>"
+          }
+        ],
+        "username recovery": [
+          {
+            "group": "username recovery",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>username</p>"
+          }
+        ]
+      }
+    },
+    "contentType": "application/json",
+    "filename": "lib/account/index.js",
+    "groupTitle": "Account",
+    "name": "PostResendmailtoken",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//resendMailToken"
+      }
+    ]
+  },
+  {
+    "group": "Account",
+    "version": "0.1.1",
+    "type": "post",
+    "url": "/signup",
+    "title": "Sign-up",
+    "description": "<p>Create a new account.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's e-mail</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>username</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's password</p>"
+          }
+        ]
+      }
+    },
+    "contentType": "application/json",
+    "error": {
+      "fields": {
+        "Error 422": [
+          {
+            "group": "Error 422",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username already used.</p>"
+          },
+          {
+            "group": "Error 422",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>E-mail already used.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/account/index.js",
+    "groupTitle": "Account",
+    "name": "PostSignup",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//signup"
+      }
+    ]
+  },
+  {
+    "group": "Beer",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/beer",
+    "title": "Get a list of beers",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "GetBeer",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//beer"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "id",
+            "description": "<p>Beer ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name",
+            "description": "<p>Beer name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name_completion",
+            "description": "<p>Beer name, to use with auto completion.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "brewery_id",
+            "description": "<p>The id of the brewery brewing that beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "abv",
+            "description": "<p>The Alcohol by volume of the beer, SI units.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "cat_id",
+            "description": "<p>Category ID, not yet implemented.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String[]",
+            "optional": true,
+            "field": "barcode",
+            "description": "<p>Barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "barcode._value",
+            "description": "<p>Value of the barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'AZTEC'",
+              "'CODABAR'",
+              "'CODE_39'",
+              "'CODE_93'",
+              "'CODE_128'",
+              "'DATA_MATRIX'",
+              "'EAN_8'",
+              "'EAN_13'",
+              "'ITF'",
+              "'MAXICODE'",
+              "'PDF_417'",
+              "'QR_CODE'",
+              "'RSS_14'",
+              "'RSS_EXPANDED'",
+              "'UPC_A'",
+              "'UPC_E'",
+              "'UPC_EAN_EXTENSION'"
+            ],
+            "optional": true,
+            "field": "barcode.format",
+            "description": "<p>Format of the barcode, as returned by ZXing.</p>"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "Beer",
+    "version": "0.1.0",
+    "type": "post",
+    "url": "/beerJSON",
+    "title": "Get a list of beers",
+    "contentType": "application/json",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "PostBeerjson",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//beerJSON"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "id",
+            "description": "<p>Beer ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name",
+            "description": "<p>Beer name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name_completion",
+            "description": "<p>Beer name, to use with auto completion.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "brewery_id",
+            "description": "<p>The id of the brewery brewing that beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "abv",
+            "description": "<p>The Alcohol by volume of the beer, SI units.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "cat_id",
+            "description": "<p>Category ID, not yet implemented.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String[]",
+            "optional": true,
+            "field": "barcode",
+            "description": "<p>Barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "barcode._value",
+            "description": "<p>Value of the barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'AZTEC'",
+              "'CODABAR'",
+              "'CODE_39'",
+              "'CODE_93'",
+              "'CODE_128'",
+              "'DATA_MATRIX'",
+              "'EAN_8'",
+              "'EAN_13'",
+              "'ITF'",
+              "'MAXICODE'",
+              "'PDF_417'",
+              "'QR_CODE'",
+              "'RSS_14'",
+              "'RSS_EXPANDED'",
+              "'UPC_A'",
+              "'UPC_E'",
+              "'UPC_EAN_EXTENSION'"
+            ],
+            "optional": true,
+            "field": "barcode.format",
+            "description": "<p>Format of the barcode, as returned by ZXing.</p>"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "Beer",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Beer ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name",
+            "description": "<p>Beer name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name_completion",
+            "description": "<p>Beer name, to use with auto completion.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "brewery_id",
+            "description": "<p>The id of the brewery brewing that beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "abv",
+            "description": "<p>The Alcohol by volume of the beer, SI units.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "cat_id",
+            "description": "<p>Category ID, not yet implemented.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String[]",
+            "optional": true,
+            "field": "barcode",
+            "description": "<p>Barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "barcode._value",
+            "description": "<p>Value of the barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'AZTEC'",
+              "'CODABAR'",
+              "'CODE_39'",
+              "'CODE_93'",
+              "'CODE_128'",
+              "'DATA_MATRIX'",
+              "'EAN_8'",
+              "'EAN_13'",
+              "'ITF'",
+              "'MAXICODE'",
+              "'PDF_417'",
+              "'QR_CODE'",
+              "'RSS_14'",
+              "'RSS_EXPANDED'",
+              "'UPC_A'",
+              "'UPC_E'",
+              "'UPC_EAN_EXTENSION'"
+            ],
+            "optional": true,
+            "field": "barcode.format",
+            "description": "<p>Format of the barcode, as returned by ZXing.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "type": "post",
+    "url": "/editBeer",
+    "title": "Edit a beer",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User",
+        "description": "<p>Account is activated and user is logged-in</p>"
+      }
+    ],
+    "contentType": "application/json",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "PostEditbeer",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//editBeer"
+      }
+    ]
+  },
+  {
+    "group": "Beer",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "id",
+            "description": "<p>Will be generated automatically, not needed at all</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name",
+            "description": "<p>Beer name.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "name_completion",
+            "description": "<p>Beer name, to use with auto completion.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "brewery_id",
+            "description": "<p>The id of the brewery brewing that beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "abv",
+            "description": "<p>The Alcohol by volume of the beer, SI units.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "cat_id",
+            "description": "<p>Category ID, not yet implemented.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String[]",
+            "optional": true,
+            "field": "barcode",
+            "description": "<p>Barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "barcode._value",
+            "description": "<p>Value of the barcode.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'AZTEC'",
+              "'CODABAR'",
+              "'CODE_39'",
+              "'CODE_93'",
+              "'CODE_128'",
+              "'DATA_MATRIX'",
+              "'EAN_8'",
+              "'EAN_13'",
+              "'ITF'",
+              "'MAXICODE'",
+              "'PDF_417'",
+              "'QR_CODE'",
+              "'RSS_14'",
+              "'RSS_EXPANDED'",
+              "'UPC_A'",
+              "'UPC_E'",
+              "'UPC_EAN_EXTENSION'"
+            ],
+            "optional": true,
+            "field": "barcode.format",
+            "description": "<p>Format of the barcode, as returned by ZXing.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "type": "post",
+    "url": "/insertBeer",
+    "title": "Insert a beer",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User",
+        "description": "<p>Account is activated and user is logged-in</p>"
+      }
+    ],
+    "contentType": "application/json",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "PostInsertbeer",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//insertBeer"
+      }
+    ]
+  },
+  {
+    "group": "Beer",
+    "version": "0.1.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Beer ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "shop",
+            "description": "<p>Shop ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "ebc",
+            "description": "<p>EBC, European Brewery Convention beer color.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "bottle",
+              "can",
+              "draft"
+            ],
+            "optional": true,
+            "field": "packaging",
+            "description": "<p>Packaging, not yet implemented</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number[]",
+            "optional": false,
+            "field": "scent",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.sweet",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.bitter",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.acid",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.alcohol",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.fruit",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "scent.other",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number[]",
+            "optional": false,
+            "field": "taste",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.sweet",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.bitter",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.acid",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.alcohol",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.fruit",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "0-100",
+            "optional": false,
+            "field": "taste.other",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String[]",
+            "optional": false,
+            "field": "remark",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "2",
+            "optional": false,
+            "field": "remark.lang",
+            "description": "<p>The language in which the remark is written.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "1..300",
+            "optional": false,
+            "field": "remark._value",
+            "description": "<p>A comment about the beer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "size": "1-10",
+            "optional": false,
+            "field": "rate",
+            "description": "<p>The rate attributed to the beer</p>"
+          }
+        ]
+      }
+    },
+    "type": "post",
+    "url": "/reviewBeer",
+    "title": "Add a review to a beer",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User",
+        "description": "<p>Account is activated and user is logged-in</p>"
+      }
+    ],
+    "contentType": "application/json",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "PostReviewbeer",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//reviewBeer"
+      }
+    ]
+  },
+  {
+    "group": "Beer",
+    "version": "0.1.0",
+    "type": "put",
+    "url": "/uploadImage/:objectId",
+    "title": "Upload an image to the server",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "objectId",
+            "description": "<p>Id of the object to be sent</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "user",
+        "title": "User",
+        "description": "<p>Account is activated and user is logged-in</p>"
+      }
+    ],
+    "contentType": "application/json",
+    "filename": "lib/beer/index.js",
+    "groupTitle": "Beer",
+    "name": "PutUploadimageObjectid",
+    "sampleRequest": [
+      {
+        "url": "http://server01-hopedia.rhcloud.com//uploadImage/:objectId"
+      }
+    ]
+  }
+] });

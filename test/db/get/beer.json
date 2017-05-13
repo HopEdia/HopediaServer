@@ -1,0 +1,93 @@
+{
+	"type": "beer",
+	"name": [
+		{
+			"_value" : "Chimay",
+			"user": "user_id",
+			"date": "2016-03-29T19:19:08.097Z"
+		}
+	],
+	"brewery_id": null,
+	"abv": null,
+	"wikidata_id": [
+		{
+			"_value" : "Q860761",
+			"user": "1",
+			"date": "2016-03-05T12:11:16.080Z"
+		}
+	],
+	"cat_id": null,
+	"ingredients": null,
+	"reviews": [
+		{
+			"date": "2016-03-05T12:11:16.080Z",
+			"shop": null,
+			"ebc": null,
+			"taste": {
+				"sweet": 10,
+				"bitter": 34,
+				"acid": 3,
+				"alcochol": 3,
+				"fruit": 7,
+				"other": 8
+				},
+			"scent": {
+				"sweet": null,
+				"bitter": null,
+				"acid": null,
+				"alcochol": null,
+				"fruit": null,
+				"other": null
+				},
+			"remark": { "lang": "en", "_value": "Very good belgian beer"},
+			"rate": 9
+		}
+	]
+}
+{
+	"type": "beer",
+	"name": [
+		{
+			"_value" : "Kwak",
+			"user": "user_id",
+			"date": "2016-03-17T20:24:18.614Z"
+		}
+	],
+	"brewery_id": null,
+	"abv": null,
+	"wikidata_id": [
+		{
+			"_value" : "Q615718",
+			"user": "1",
+			"date": "2016-03-17T20:24:18.614Z"
+		}
+	],
+	"cat_id": null,
+	"ingredients": null,
+	"reviews": [
+		{
+			"date": "2016-03-17T20:24:18.614Z",
+			"shop": null,
+			"ebc": null,
+			"taste": {
+				"sweet": null,
+				"bitter": null,
+				"acid": null,
+				"alcochol": null,
+				"fruit": null,
+				"other": null
+				},
+			"scent": {
+				"sweet": null,
+				"bitter": null,
+				"acid": null,
+				"alcochol": null,
+				"fruit": null,
+				"other": null
+				},
+			"remark": {"lang": "fr", "_value" : "Cette \"bière du cocher\" est très bonne"},
+			"rate": 9
+		}
+	]
+}
+

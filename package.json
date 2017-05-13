@@ -1,7 +1,7 @@
 {
   "name": "hopedia_server",
   "version": "0.1.0",
-  "description": "Api server of hopedia",
+  "description": "Hop'Edia server",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -13,25 +13,35 @@
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "gm": "^1.22.0",
-    "hopedia_beer_sanitizer": "HopEdia/HopediaSanitizer.git#v0.1.0",
+    "hopedia_beer_sanitizer": "HopEdia/Sanitizer.git#v0.1.0",
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^2.1.14",
     "nodemailer": "^2.3.2"
   },
   "devDependencies": {
-    "hopedia_beer_sanitizer": "file:///home/tibor/programmation/www/beer/beerSanitizer"
+    "chai": "^3.5.0",
+    "hopedia_beer_sanitizer": "file://../beerSanitizer",
+    "mocha": "^3.2.0",
+    "apidoc-contenttype-plugin": "~0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "api_doc": "apidoc -i lib/ -o docs -t node_modules/apidoc-contenttype-plugin/template/ --parse-parsers apicontenttype=node_modules/apidoc-contenttype-plugin/api_content_type.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HopEdia/HopediaServer.git"
+    "url": "git+https://github.com/HopEdia/Server.git"
   },
   "author": "koko-ng",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/HopEdia/HopediaServer/issues"
+    "url": "https://github.com/HopEdia/Server/issues"
   },
-  "homepage": "https://github.com/HopEdia/HopediaServer#readme"
+  "homepage": "https://github.com/HopEdia/Server#readme",
+  "apidoc": {
+    "sampleUrl": "http://server01-hopedia.rhcloud.com/",
+    "name": "Hop'Edia API documentation",
+    "title": "Hop'Edia API documentation",
+    "description": "Hop'Edia server API documentation"
+  }
 }
