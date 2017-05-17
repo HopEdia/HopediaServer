@@ -1,6 +1,7 @@
 const mongo = require('mongodb').MongoClient,
       api = require('../index.js'),
-      nodemailer = require('nodemailer');
+      nodemailer = require('nodemailer'),
+      util = require('util');
 
 var url = 'mongodb://localhost:27017/test';
 var server_port=8080
@@ -9,7 +10,7 @@ var server_ip_address='192.168.1.109'
 var mailer = nodemailer.createTransport();
 
 mongo.connect(url, function(err, database) {
-	console.log("Connected correctly to server.");
+	util.log("Connected correctly to server.");
 	api({
 		database: database,
 		secret: '128-bit',

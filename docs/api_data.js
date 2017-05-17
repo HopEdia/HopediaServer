@@ -25,7 +25,7 @@ define({ "api": [
     "name": "PostChangepassword",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//changePassword"
+        "url": "https://server01-hopedia.rhcloud.com/changePassword"
       }
     ]
   },
@@ -185,7 +185,7 @@ define({ "api": [
     "name": "PostGettoken",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//getToken"
+        "url": "https://server01-hopedia.rhcloud.com/getToken"
       }
     ]
   },
@@ -203,8 +203,8 @@ define({ "api": [
             "group": "token",
             "type": "String",
             "optional": false,
-            "field": "Token",
-            "description": "<p>sent by getToken</p>"
+            "field": "token",
+            "description": "<p>Token sent by getToken</p>"
           }
         ]
       }
@@ -278,7 +278,7 @@ define({ "api": [
     "name": "PostLogin",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//login"
+        "url": "https://server01-hopedia.rhcloud.com/login"
       }
     ]
   },
@@ -316,7 +316,7 @@ define({ "api": [
     "name": "PostResendmailtoken",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//resendMailToken"
+        "url": "https://server01-hopedia.rhcloud.com/resendMailToken"
       }
     ]
   },
@@ -380,7 +380,7 @@ define({ "api": [
     "name": "PostSignup",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//signup"
+        "url": "https://server01-hopedia.rhcloud.com/signup"
       }
     ]
   },
@@ -395,7 +395,7 @@ define({ "api": [
     "name": "GetBeer",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//beer"
+        "url": "https://server01-hopedia.rhcloud.com/beer"
       }
     ],
     "parameter": {
@@ -499,7 +499,7 @@ define({ "api": [
     "name": "PostBeerjson",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//beerJSON"
+        "url": "https://server01-hopedia.rhcloud.com/beerJSON"
       }
     ],
     "parameter": {
@@ -698,7 +698,7 @@ define({ "api": [
     "name": "PostEditbeer",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//editBeer"
+        "url": "https://server01-hopedia.rhcloud.com/editBeer"
       }
     ]
   },
@@ -809,7 +809,7 @@ define({ "api": [
     "name": "PostInsertbeer",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//insertBeer"
+        "url": "https://server01-hopedia.rhcloud.com/insertBeer"
       }
     ]
   },
@@ -1012,7 +1012,7 @@ define({ "api": [
     "name": "PostReviewbeer",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//reviewBeer"
+        "url": "https://server01-hopedia.rhcloud.com/reviewBeer"
       }
     ]
   },
@@ -1048,7 +1048,7 @@ define({ "api": [
     "name": "PutUploadimageObjectid",
     "sampleRequest": [
       {
-        "url": "http://server01-hopedia.rhcloud.com//uploadImage/:objectId"
+        "url": "https://server01-hopedia.rhcloud.com/uploadImage/:objectId"
       }
     ]
   }

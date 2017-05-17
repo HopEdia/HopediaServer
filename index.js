@@ -15,8 +15,6 @@ const account = require('./lib/account/index.js');
 
 exports = module.exports = main;
 
-const tokenRandBytes = 32;
-
 const regEmail = /\S+@\S+\.\S+/;
 
 var db;
@@ -52,6 +50,11 @@ function main(param) {
 
 	if(!param.url) {
 		param.url=param.hostname+':'+param.port; console.log("WARN: Using hostname+':'port for the url")
+	}
+
+	if(!Number.isInteger(param.token_rand_byte)) {
+		console.log('WARN: param.token_rand_byte has to be an integer');
+		param.token_rand_byte=32;
 	}
 
 	if(!param.mailValidation) {

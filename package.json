@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/HopEdia/Server#readme",
   "apidoc": {
-    "sampleUrl": "http://server01-hopedia.rhcloud.com/",
+    "sampleUrl": "https://server01-hopedia.rhcloud.com",
     "name": "Hop'Edia API documentation",
     "title": "Hop'Edia API documentation",
     "description": "Hop'Edia server API documentation"
